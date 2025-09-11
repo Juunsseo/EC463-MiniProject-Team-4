@@ -2,14 +2,25 @@
 # To be run on a student's computer (not the Pico)
 # Requires the 'requests' library: pip install requests.
 
+from typing import List, Dict, Optional
 import requests
 import time
+import logging
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # --- Configuration ---
 # Students should populate this list with the IP address(es of their Picos
-PICO_IPS = [
+PICO_IPS: List[str] = [
     "192.168.1.101",
 ]
+
+logger = logging.getLogger("conductor")
+if not logger.handlers:
+    handler = logging.StreamHandler()
+    formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+logger.setLevel(logging.INFO)
 
 # --- Music Definition ---
 # Notes mapped to frequencies (in Hz)
@@ -25,23 +36,72 @@ C5 = 523
 # A simple melody: "Twinkle, Twinkle, Little Star"
 # Format: (note_frequency, duration_in_ms)
 SONG = [
-    (C4, 400),
-    (C4, 400),
-    (G4, 400),
-    (G4, 400),
-    (A4, 400),
-    (A4, 400),
-    (G4, 800),
-    (F4, 400),
-    (F4, 400),
-    (E4, 400),
-    (E4, 400),
-    (D4, 400),
-    (D4, 400),
-    (C4, 800),
+    {"freq": C4, "ms": 400, "duty": 0.5},
+    {"freq": C4, "ms": 400, "duty": 0.5},
+    {"freq": G4, "ms": 400, "duty": 0.5},
+    {"freq": G4, "ms": 400, "duty": 0.5},
+    {"freq": A4, "ms": 400, "duty": 0.5},
+    {"freq": A4, "ms": 400, "duty": 0.5},
+    {"freq": G4, "ms": 800, "duty": 0.5},
+    {"freq": F4, "ms": 400, "duty": 0.5},
+    {"freq": F4, "ms": 400, "duty": 0.5},
+    {"freq": E4, "ms": 400, "duty": 0.5},
+    {"freq": E4, "ms": 400, "duty": 0.5},
+    {"freq": D4, "ms": 400, "duty": 0.5},
+    {"freq": D4, "ms": 400, "duty": 0.5},
+    {"freq": C4, "ms": 800, "duty": 0.5},
 ]
 
 # --- Conductor Logic ---
+
+def load_picos(path: Optional[str] = None) -> List[str]:
+    """
+    Input:
+      - path: Optional path to file with one IP per line
+    Output:
+      - list of Pico IP strings (e.g., ["192.168.1.101", "192.168.1.102"])
+    Side-effects:
+      - None
+    Notes:
+      - If path is None, returns default PICO_IPS constant
+    """
+    if path is None:
+        return list(PICO_IPS)
+    ips: List[str] = []
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            for line in fh:
+                s = line.strip()
+                if not s or s.startswith("#"):
+                    continue
+                ips.append(s)
+    except FileNotFoundError:
+        logger.warning("Pico list file not found: %s. Using default list.", path)
+        return list(PICO_IPS)
+    return ips
+
+
+def send_post(ip: str, path: str, payload: Dict, timeout: float = 0.2) -> requests.Response:
+    """
+    Input:
+      - ip: "192.168.1.101" or "host:port"
+      - path: API path, e.g. "/tone" or "/melody"
+      - payload: dict representing JSON body
+      - timeout: float seconds
+    Output:
+      - requests.Response object (may raise RequestException on errors)
+    Side-effects:
+      - Network: a JSON POST to http://{ip}{path}.
+      - Ensures path starts with '/'.
+      - May raise requests.RequestException on network errors.
+    """
+    if not path.startswith("/"):
+        path = "/" + path
+    url = f"http://{ip}{path}"
+    logger.debug("POST %s payload=%s timeout=%s", url, payload, timeout)
+    resp = requests.post(url, json=payload, timeout=timeout)
+    logger.debug("Response %s: %s", url, resp.status_code)
+    return resp
 
 
 def play_note_on_all_picos(freq, ms):
@@ -61,6 +121,37 @@ def play_note_on_all_picos(freq, ms):
             pass
         except requests.exceptions.RequestException as e:
             print(f"Error contacting {ip}: {e}")
+
+
+def conductor_play_song(picos: List[str], song: List[Dict] = SONG, gap_factor: float = 1.1) -> None:
+    """
+    High-level broadcast composition.
+    Input:
+      - picos: list of Pico IPs
+      - song: list of {"freq":int,"ms":int,"duty":float}
+      - gap_factor: multiplier to stretch pause between notes
+    Output:
+      - None
+    Side-effects:
+      - Iteratively calls play_note_on_all
+      - Sleeps locally to pace the song
+    """
+    if not song:
+        logger.debug("Empty song passed to conductor_play_song")
+        return
+    logger.info("Starting song: %d notes across %d devices", len(song), len(picos))
+    try:
+        for idx, note in enumerate(song, start=1):
+            freq = int(note["freq"])
+            ms = int(note["ms"])
+            duty = float(note.get("duty", 0.5))
+            logger.info("Note %d/%d: %dHz %dms duty=%s", idx, len(song), freq, ms, duty)
+            play_note_on_all(picos, freq, ms, duty)
+            # Local pacing: stretch the sleep slightly to give devices time to play
+            sleep_s = (ms / 1000.0) * float(gap_factor)
+            time.sleep(max(0.0, sleep_s))
+    except KeyboardInterrupt:
+        logger.info("Conductor stopped by user.")
 
 
 if __name__ == "__main__":
