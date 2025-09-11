@@ -1,6 +1,6 @@
 # conductor.py
 # To be run on a student's computer (not the Pico)
-# Requires the 'requests' library: pip install requests
+# Requires the 'requests' library: pip install requests.
 
 import requests
 import time
