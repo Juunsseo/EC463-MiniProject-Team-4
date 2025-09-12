@@ -1,7 +1,7 @@
 #Every value here can be changed
 
 ADC_PIN = 26
-BUZZER_PIN = 15
+BUZZER_PIN = 16
 
 ADC_MIN = 0
 ADC_MAX = 65535
