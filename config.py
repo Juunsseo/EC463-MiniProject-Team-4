@@ -1,0 +1,15 @@
+#Every value here can be changed
+
+ADC_PIN = 26
+BUZZER_PIN = 15
+
+ADC_MIN = 0
+ADC_MAX = 65535
+
+DEFAULT_DUTY = 0.5
+DEFAULT_GAP_MS = 20
+
+MIN_FREQ = 50
+MAX_FREQ = 8000
+MIN_MS = 1
+MAX_MS = 10000

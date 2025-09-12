@@ -1,5 +1,5 @@
 import gc, utime
-from adc import read_sensor_raw, normalize_raw, estimate_lux #function name can be changed
+from adc import read_sensor_raw, normalize_raw, estimate_lux #function names can be changed
 
 def sensor_payload() -> dict:
     """Build /sensor response body."""
