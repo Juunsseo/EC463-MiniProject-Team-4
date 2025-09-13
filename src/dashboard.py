@@ -10,7 +10,6 @@ import sys
 # Students should populate this list with the IP address(es) of their Pico
 PICO_IPS = [
     "192.168.1.101",
-    "192.168.1.102",  # Example: Add more IPs here for multiple devices
 ]
 
 
