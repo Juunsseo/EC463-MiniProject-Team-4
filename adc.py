@@ -1,4 +1,3 @@
-# drivers/adc.py
 import machine
 
 # Initialize ADC on GP28 (ADC2)
@@ -27,6 +26,7 @@ def normalize_raw(raw: int, min_in: RAW_MIN, max_in: RAW_MAX) -> float:
     return (raw - min_in) / (max_in - min_in)
 
 def estimate_lux(norm: float) -> float:
-  """Rough estimate of lux  from normalized value."""
-    # Simple linear mapping: 0.0 → 0 lux, 1.0 → 1000 lux
+    """Rough estimate of lux  from normalized value."""
     return norm * 1000
+
+

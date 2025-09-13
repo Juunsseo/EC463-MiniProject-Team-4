@@ -1,10 +1,9 @@
-# drivers/buzzer.py
 import machine
 
 # Setup PWM on GP16
 _buzzer_pin = machine.Pin(16)
 _pwm = machine.PWM(_buzzer_pin)
-_pwm.duty_u16(0)  # initially silent
+_pwm.duty_u16(0)
 
 def start_tone(freq: int, duty: float = 0.5) -> None:
     """
