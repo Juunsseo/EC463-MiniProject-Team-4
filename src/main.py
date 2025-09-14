@@ -14,7 +14,7 @@ photo_sensor_pin = machine.ADC(26)
 
 # The buzzer is connected to a GPIO pin that supports Pulse Width Modulation (PWM).
 # PWM allows us to create a square wave at a specific frequency to make a sound.
-buzzer_pin = machine.PWM(machine.Pin(18))
+buzzer_pin = machine.PWM(machine.Pin(16))
 
 # --- Global State ---
 # This variable will hold the task that plays a note from an API call.
