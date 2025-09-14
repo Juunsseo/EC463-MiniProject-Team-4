@@ -104,7 +104,7 @@ def send_post(ip: str, path: str, payload: Dict, timeout: float = 0.2) -> reques
     return resp
 
 
-def play_note_on_all_picos(freq, ms):
+def play_note_on_all(freq, ms):
     """Sends a /tone POST request to every Pico in the list."""
     print(f"Playing note: {freq}Hz for {ms}ms on all devices.")
 
@@ -122,6 +122,32 @@ def play_note_on_all_picos(freq, ms):
         except requests.exceptions.RequestException as e:
             print(f"Error contacting {ip}: {e}")
 
+def play_note_on_pico(ip: str, freq: int, ms: int, duty: float = 0.5) -> None:
+    """
+    Input:
+      - ip: Pico IP address
+      - freq: frequency in Hz
+      - ms: duration in milliseconds
+      - duty: duty cycle (volume) 0.0-1.0
+    Output:
+      - None
+    Side-effects:
+      - Sends POST /tone to the specified Pico
+    Notes:
+      - Best effort: ignores network exceptions to avoid blocking orchestration
+    """
+
+def play_melody_on_all(picos: List[str], notes: List[Dict], gap_ms: int = 20) -> None:
+    """
+    Input:
+      - picos: list of Pico IPs
+      - notes: list of {"freq":int,"ms":int,"duty"?:float}
+      - gap_ms: gap between notes in ms
+    Output:
+      - None
+    Side-effects:
+      - Sends POST /melody to each Pico
+    """
 
 def conductor_play_song(picos: List[str], song: List[Dict] = SONG, gap_factor: float = 1.1) -> None:
     """
@@ -171,7 +197,7 @@ if __name__ == "__main__":
 
         # Play the song
         for note, duration in SONG:
-            play_note_on_all_picos(note, duration)
+            play_note_on_all(note, duration)
             # Wait for the note's duration plus a small gap before playing the next one
             time.sleep(duration / 1000 * 1.1)
 
