@@ -104,7 +104,7 @@ def send_post(ip: str, path: str, payload: Dict, timeout: float = 0.2) -> reques
     return resp
 
 
-def play_note_on_all_picos(freq, ms):
+def play_note_on_all(freq, ms):
     """Sends a /tone POST request to every Pico in the list."""
     print(f"Playing note: {freq}Hz for {ms}ms on all devices.")
 
@@ -120,8 +120,81 @@ def play_note_on_all_picos(freq, ms):
             # This is expected, we can ignore it
             pass
         except requests.exceptions.RequestException as e:
-            print(f"Error contacting {ip}: {e}")
+            print(f"Error contacting {ip}: {e}")  
 
+
+def play_note_on_pico(ip: str, freq: int, ms: int, duty: float = 0.5) -> None:
+    """
+    Sends POST /tone to a single Pico. Best-effort: swallow network errors.
+    
+    Input:
+      - ip: Pico IP address
+      - freq: frequency in Hz
+      - ms: duration in milliseconds
+      - duty: duty cycle (volume) 0.0-1.0
+    Output:
+      - None
+    Side-effects:
+      - Sends POST /tone to the specified Pico
+    Notes:
+      - Best effort: ignores network exceptions to avoid blocking orchestration
+    """
+    payload = {"freq": int(freq), "ms": int(ms), "duty": float(duty)}
+    try:
+        send_post(ip, "/tone", payload, timeout=0.15)
+        logger.debug("Sent /tone to %s payload=%s", ip, payload)
+    except requests.RequestException as e:
+        logger.warning("play_note_on_pico: %s error: %s", ip, e)
+
+
+def play_melody_on_all(picos: List[str], notes: List[Dict], gap_ms: int = 20) -> None:
+    """
+    Broadcast a queued melody to all Picos concurrently.
+    Expects notes like: [{"freq":440, "ms":300, "duty":0.5}, ...]
+
+    Input:
+      - picos: list of Pico IPs
+      - notes: list of {"freq":int,"ms":int,"duty"?:float}
+      - gap_ms: gap between notes in ms
+    Output:
+      - None
+    Side-effects:
+      - Sends POST /melody to each Pico
+    """
+    if not picos:
+        logger.debug("play_melody_on_all: empty pico list")
+        return
+    if not notes:
+        logger.debug("play_melody_on_all: empty notes list")
+        return
+
+    # Normalize and filter notes
+    norm_notes: List[Dict] = []
+    for n in notes:
+        if "freq" in n and "ms" in n:
+            norm_notes.append({
+                "freq": int(n["freq"]),
+                "ms": int(n["ms"]),
+                "duty": float(n.get("duty", 0.5)),
+            })
+    if not norm_notes:
+        logger.debug("play_melody_on_all: no valid notes after normalization")
+        return
+
+    payload = {"notes": norm_notes, "gap_ms": int(gap_ms)}
+
+    def _send(ip: str) -> None:
+        try:
+            send_post(ip, "/melody", payload, timeout=0.2)
+        except requests.RequestException:
+            # Best-effort; ignore per device
+            pass
+
+    max_workers = min(16, max(1, len(picos)))
+    with ThreadPoolExecutor(max_workers=max_workers) as ex:
+        for ip in picos:
+            ex.submit(_send, ip)
+    logger.debug("Broadcast /melody to %d devices payload=%s", len(picos), payload)
 
 def conductor_play_song(picos: List[str], song: List[Dict] = SONG, gap_factor: float = 1.1) -> None:
     """
@@ -171,7 +244,7 @@ if __name__ == "__main__":
 
         # Play the song
         for note, duration in SONG:
-            play_note_on_all_picos(note, duration)
+            play_note_on_all(note, duration)
             # Wait for the note's duration plus a small gap before playing the next one
             time.sleep(duration / 1000 * 1.1)
 
