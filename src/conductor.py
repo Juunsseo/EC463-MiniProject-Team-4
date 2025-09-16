@@ -10,8 +10,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # --- Configuration ---
 # Students should populate this list with the IP address(es of their Picos
-PICO_IPS: List[str] = [
-    "192.168.1.101",
+PICO_IPS = [
+    "192.168.137.245",
 ]
 
 logger = logging.getLogger("conductor")
