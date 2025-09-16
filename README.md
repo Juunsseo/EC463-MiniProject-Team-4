@@ -20,8 +20,7 @@ Other IDEs can also be used, including Visual Studio Code or [rshell](./doc/rshe
 
 [![EC311 Final Demo Video- Puck](https://img.youtube.com/vi/8RlqUY500Eo/0.jpg)](https://youtu.be/8RlqUY500Eo)
 - Click the image above.
-https://youtu.be/8RlqUY500Eo
-
+[![SC1](/doc/sc1)]
 ---
 
 ## Hardware
