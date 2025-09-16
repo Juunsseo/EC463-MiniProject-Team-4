@@ -23,8 +23,8 @@ Other IDEs can also be used, including Visual Studio Code or [rshell](./doc/rshe
 
 ## Screenshots
 
-(doc/sc1.png)
-(doc/sc2`png)
+![SC1](doc/sc1.png)
+![SC2](doc/sc2.png)
 ---
 
 ## Hardware
