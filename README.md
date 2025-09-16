@@ -16,6 +16,14 @@ Other IDEs can also be used, including Visual Studio Code or [rshell](./doc/rshe
 
 ---
 
+## Demo Video
+
+[![EC311 Final Demo Video- Puck](https://img.youtube.com/vi/8RlqUY500Eo/0.jpg)](https://youtu.be/8RlqUY500Eo)
+- Click the image above.
+https://youtu.be/8RlqUY500Eo
+
+---
+
 ## Hardware
 
 * Raspberry Pi Pico 2WH [SC1634](https://pip.raspberrypi.com/categories/1088-raspberry-pi-pico-2-w) (WiFi + Bluetooth, with header pins)
@@ -41,10 +49,5 @@ On the Pico W, GP26 is **ADC0**, GP27 is **ADC1**, and GP28 is **ADC2**.
 
 ```python
 photo_sensor_pin = machine.ADC(26)
----
-## Demo Video
 
-[![EC311 Final Demo Video- Puck](https://img.youtube.com/vi/8RlqUY500Eo/0.jpg)](https://youtu.be/8RlqUY500Eo)
-- Click the image above.
-https://youtu.be/8RlqUY500Eo
 
