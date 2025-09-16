@@ -24,9 +24,9 @@ Other IDEs can also be used, including Visual Studio Code or [rshell](./doc/rshe
 ## Screenshots
 
 ![SC1](doc/sc1.png)
-- We can check the status of the pi in the list.
+We can check the status of the pi in the list.
 ![SC2](doc/sc2.png)
-- After 3 seconds of waiting, the player sends packets to play the song.
+After 3 seconds of waiting, the player sends packets to play the song.
 ---
 
 ## Hardware
