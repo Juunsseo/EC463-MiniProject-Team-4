@@ -41,3 +41,10 @@ On the Pico W, GP26 is **ADC0**, GP27 is **ADC1**, and GP28 is **ADC2**.
 
 ```python
 photo_sensor_pin = machine.ADC(26)
+
+## Demo Video
+
+[![EC311 Final Demo Video- Puck](https://img.youtube.com/vi/8RlqUY500Eo/0.jpg)](https://youtu.be/8RlqUY500Eo)
+- Click the image above.
+https://youtu.be/8RlqUY500Eo
+
