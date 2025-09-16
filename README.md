@@ -20,15 +20,16 @@ Other IDEs can also be used, including Visual Studio Code or [rshell](./doc/rshe
 
 [![EC311 Final Demo Video- Puck](https://img.youtube.com/vi/8RlqUY500Eo/0.jpg)](https://youtu.be/8RlqUY500Eo)
 - Click the image above.
+  This first video portrays how our device takes light and plays music. You can also see how shadow affects the music, when the hand is passed above the light sensor the music/note changes.
 
 ## Screenshots
 
 ![SC1](doc/sc1.png)
-- We can check the status of the pi in the list.
+- While running the system we can check the status of the pi in the list. The status is important b/c it allows us to ensure the Pico is working properly and efficiently. Avoiding hardware erros or alerting us of errors in general.
 
 ![SC2](doc/sc2.png)
-- After 3 seconds of waiting, the player sends packets to play the song.
----
+- The image shows the system after 3 seconds of waiting, that the player sends packets to play the song. We used these packets get requests to portray the user inputs.
+
 
 ## Hardware
 
