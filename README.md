@@ -52,7 +52,7 @@ The photoresistor is used with a **10kΩ resistor in a voltage divider** [circui
 In MicroPython, the [`machine.ADC`](https://docs.micropython.org/en/latest/library/machine.ADC.html) class is used to read the analog voltage.  
 On the Pico W, GP26 is **ADC0**, GP27 is **ADC1**, and GP28 is **ADC2**.  
 
-⚠️ In this project, **GP26 (ADC0)** is used for the photoresistor:  
+In this project, **GP26 (ADC0)** is used for the photoresistor:  
 
 ```python
 photo_sensor_pin = machine.ADC(26)
