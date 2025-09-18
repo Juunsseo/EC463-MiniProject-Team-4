@@ -4,15 +4,13 @@
 
 This project uses the **Raspberry Pi Pico 2WH SC1634** (wireless, with header pins).
 
-Each team must provide a micro-USB cable that connects to their laptop to plug into the Pi Pico.  
-The cable **must have data pins connected**. Splitter cords with multiple connectors often do not have data pins wired.  
-Such micro-USB cables can be found locally at Microcenter, convenience stores, etc.  
+We focused on wireless communication between devices, as our main project will use a wireless connection.
 
-The student laptop is used to program the Pi Pico.  
-The laptop software to program and debug the Pi Pico works on macOS, Windows, and Linux.
+Use a laptop as a controller(conductor.py). You can also check the status of Pico(dashboard.py).
 
-This miniproject focuses on using [MicroPython](./doc/micropython.md) with the [Thonny IDE](./doc/thonny.md).  
-Other IDEs can also be used, including Visual Studio Code or [rshell](./doc/rshell.md).
+As you start the conductor.py, it sends the tone packet to Pico's IP address.
+
+main.py is running on Pico.
 
 ---
 
